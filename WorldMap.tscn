@@ -1,8 +1,7 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://sprites/vignette.png" type="Texture" id=1]
-[ext_resource path="res://sprites/map/position-marker.png" type="Texture" id=2]
-[ext_resource path="res://MapNode.tscn" type="PackedScene" id=3]
+[ext_resource path="res://MapNodeTree.tscn" type="PackedScene" id=2]
 
 [node name="WorldMap" type="Node2D"]
 
@@ -10,11 +9,6 @@
 texture = ExtResource( 1 )
 centered = false
 
-[node name="Player" type="Sprite" parent="."]
-position = Vector2( 512, 300 )
-scale = Vector2( 0.063, 0.063 )
-texture = ExtResource( 2 )
+[node name="Player" type="Node2D" parent="."]
 
-[node name="MapNodes" type="Node2D" parent="."]
-
-[node name="MapNode" parent="MapNodes" instance=ExtResource( 3 )]
+[node name="MapNodeTree" parent="Player" instance=ExtResource( 2 )]
