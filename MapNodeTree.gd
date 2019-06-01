@@ -16,7 +16,17 @@ var MapNode = preload("res://MapNode.tscn")
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	randomize()
 	for i in range(8):
 		var new_node = MapNode.instance()
 		new_node.set_texture(images[randi()%10])
+		if i == 0:
+			new_node.current = true
+			new_node.position.x = 512
+			new_node.position.y = 300
 		add_child(new_node)
+	var children = get_children()
+	var root = get_child(0)
+	for n in children:
+		if n == root: continue
+		root.add_neighbor(n)
