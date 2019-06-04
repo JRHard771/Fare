@@ -1,29 +1,31 @@
 extends Node2D
 
-var neighbors = []
-var current = false
+var type = null
+var exits = []
+var scale_dest = Vector2(0.0625, 0.0625)
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	pass
 
-func set_texture(resource):
+func _process(delta):
+	var sprite = get_node("Sprite")
+	sprite.scale = sprite.scale.linear_interpolate(scale_dest, min(delta * 4, 1.0))
+
+func add_exit(node):
+	if !exits.find(node):
+		exits.append(node)
+	if !node.exits.find(self):
+		node.exits.append(self)
+
+func set_texture(resource, set_scale=0.0625):
 	var sprite = get_node("Sprite")
 	sprite.texture = resource
-	sprite.self_modulate = Color(randf()*0.9+0.1, randf()*0.9+0.1, randf()*0.9+0.1)
-	self.position.x = randi() % 960 + 32
-	self.position.y = randi() % 536 + 32
+	sprite.scale.x = set_scale
+	sprite.scale.y = set_scale
 
-func add_neighbor(mapnode):
-	neighbors.append(mapnode)
-	mapnode.neighbors.append(self)
+func _on_mouse_entered():
+	scale_dest = Vector2(0.125, 0.125)
 
-func _draw():
-	if current:
-		for n in neighbors:
-			var step = self.position.direction_to(n.position).normalized() * 24.0
-			var path_pos = Vector2(position.x + step.x, position.y + step.y)
-			while path_pos.distance_to(n.position) >= 24.0:
-				draw_circle(path_pos - position, 5, Color(0.0, 0.0, 0.0))
-				draw_circle(path_pos - position, 3, Color(1.0, 1.0, 1.0))
-				path_pos += step
+func _on_mouse_exited():
+	scale_dest = Vector2(0.0625, 0.0625)

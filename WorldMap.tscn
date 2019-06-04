@@ -11,6 +11,4 @@ script = ExtResource( 1 )
 texture = ExtResource( 2 )
 centered = false
 
-[node name="Player" type="Node2D" parent="."]
-
-[node name="MapNodeTree" parent="Player" instance=ExtResource( 3 )]
+[node name="MapNodeTree" parent="." instance=ExtResource( 3 )]
