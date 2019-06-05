@@ -20,5 +20,18 @@ monitorable = false
 
 [node name="Shape" type="CollisionShape2D" parent="Area2D"]
 shape = SubResource( 1 )
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+margin_left = -32.0
+margin_top = -56.0
+margin_right = 33.0
+margin_bottom = -24.0
+
+[node name="Label" type="Label" parent="CenterContainer"]
+margin_top = 9.0
+margin_right = 65.0
+margin_bottom = 23.0
+text = "Node Text"
+align = 1
 [connection signal="mouse_entered" from="Area2D" to="." method="_on_mouse_entered"]
 [connection signal="mouse_exited" from="Area2D" to="." method="_on_mouse_exited"]

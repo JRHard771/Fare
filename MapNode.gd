@@ -3,6 +3,8 @@ extends Node2D
 var type = null
 var exits = []
 var scale_dest = Vector2(0.0625, 0.0625)
+var label_current = 0
+var label_dest = 0
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -10,13 +12,23 @@ func _ready():
 
 func _process(delta):
 	var sprite = get_node("Sprite")
+	var label = get_node("CenterContainer/Label")
 	sprite.scale = sprite.scale.linear_interpolate(scale_dest, min(delta * 4, 1.0))
+	if label_current < label_dest:
+		label_current += delta * 16
+	else:
+		label_current = label_dest
+	label.visible_characters = floor(label_current)
 
 func add_exit(node):
 	if !exits.find(node):
 		exits.append(node)
 	if !node.exits.find(self):
 		node.exits.append(self)
+
+func set_label(text):
+	var label = get_node("CenterContainer/Label")
+	label.text = text
 
 func set_texture(resource, set_scale=0.0625):
 	var sprite = get_node("Sprite")
@@ -26,6 +38,8 @@ func set_texture(resource, set_scale=0.0625):
 
 func _on_mouse_entered():
 	scale_dest = Vector2(0.125, 0.125)
+	label_dest = 128
 
 func _on_mouse_exited():
 	scale_dest = Vector2(0.0625, 0.0625)
+	label_dest = 0

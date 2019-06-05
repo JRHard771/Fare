@@ -64,7 +64,6 @@ func populate(mnode):
 		spawn_node(mnode, random_terrain())
 		mnode.remove_from_group('Open Nodes')
 
-
 func check_spawn(pos, type):
 	var others = get_tree().get_nodes_in_group('MapNodes')
 	for n in others:
@@ -79,6 +78,7 @@ func spawn_node(parent, type):
 		new_node.position = parent.position + edge
 		new_node.type = type
 		new_node.set_texture(terrain[type]['image'])
+		new_node.set_label(type.capitalize())
 		new_node.add_to_group('MapNodes')
 		new_node.add_to_group('Open Nodes')
 		add_child(new_node)
@@ -93,6 +93,7 @@ func spawn_node(parent, type):
 				new_node.position = parent.position + edge
 				new_node.type = type
 				new_node.set_texture(terrain[type]['image'])
+				new_node.set_label(type.capitalize())
 				new_node.add_to_group('MapNodes')
 				new_node.add_to_group('Open Nodes')
 				add_child(new_node)
@@ -104,9 +105,10 @@ func spawn_node(parent, type):
 func _ready():
 	randomize()
 	var root = MapNode.instance()
-	root.position = Vector2(512, 300)
+	root.position = Vector2(0, 0)
 	root.type = 'city'
 	root.set_texture(terrain['city']['image'])
+	root.set_label('City')
 	root.add_to_group('MapNodes')
 	add_child(root)
 	populate(root)
@@ -114,11 +116,3 @@ func _ready():
 		var nodes = get_tree().get_nodes_in_group('Open Nodes')
 		for n in nodes:
 			populate(n)
-
-func _process(delta):
-	if Input.get_mouse_button_mask():
-		var mpos = get_global_mouse_position()
-		mpos.x = (mpos.x - 512) / 512.0
-		mpos.y = (mpos.y - 300) / 300.0
-		position.x -= mpos.x * delta * 512
-		position.y -= mpos.y * delta * 512
