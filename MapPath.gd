@@ -9,7 +9,7 @@ func _ready():
 
 func _draw():
 	var distance = node_from.position.distance_to(node_to.position)
-	var dots = round(distance / 32)
+	var dots = round(distance / 24)
 	var step = node_from.position.direction_to(node_to.position) * (distance / dots)
 	var pos = node_from.position + step
 	for i in range(dots-1):

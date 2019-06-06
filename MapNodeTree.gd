@@ -4,15 +4,15 @@ var MapNode = preload("res://MapNode.tscn")
 var MapPath = preload("res://MapPath.tscn")
 var terrain = {
 	dungeon = {
-		pad = pow(120, 2),
+		pad = pow(160, 2),
 		image = preload("res://sprites/map/castle-ruins.png")
 		},
 	city = {
-		pad = pow(200, 2),
+		pad = pow(160, 2),
 		image = preload("res://sprites/map/castle.png")
 		},
 	cave = {
-		pad = pow(80, 2),
+		pad = pow(120, 2),
 		image = preload("res://sprites/map/cave-entrance.png")
 		},
 	door = {
@@ -20,7 +20,7 @@ var terrain = {
 		image = preload("res://sprites/map/exit-door.png")
 		},
 	village = {
-		pad = pow(200, 2),
+		pad = pow(80, 2),
 		image = preload("res://sprites/map/huts-village.png")
 		},
 	mountain = {
@@ -46,8 +46,18 @@ var terrain = {
 	}
 
 func random_terrain():
-	var options = ['dungeon', 'city', 'cave', 'village', 'mountain', 'forest', 'road']
-	return options[ randi() % 7 ]
+	var d20 = randi() % 20
+	if d20 == 0:
+		return 'village'
+	elif d20 == 1:
+		return 'dungeon'
+	elif d20 == 2:
+		return 'cave'
+	elif d20 <= 7:
+		return 'road'
+	elif d20 <= 13:
+		return 'mountain'
+	return 'forest'
 
 func add_path(node_a, node_b):
 	var path = MapPath.instance()
@@ -60,7 +70,7 @@ func path_length(type_a, type_b):
 	return sqrt(max(terrain[type_a]['pad'], terrain[type_b]['pad']))
 
 func populate(mnode):
-	for i in range(3):
+	for i in range(2):
 		spawn_node(mnode, random_terrain())
 		mnode.remove_from_group('Open Nodes')
 
@@ -72,7 +82,7 @@ func check_spawn(pos, type):
 	return true
 
 func spawn_node(parent, type):
-	var edge = Vector2.RIGHT.rotated( randf() * PI ) * path_length(parent.type, type)
+	var edge = Vector2.RIGHT.rotated( randf() * PI ) * (path_length(parent.type, type) + 1)
 	if check_spawn(parent.position + edge, type):
 		var new_node = MapNode.instance()
 		new_node.position = parent.position + edge
@@ -101,6 +111,25 @@ func spawn_node(parent, type):
 				return true
 	return false
 
+func loop_map_nodes():
+	var ray = RayCast2D.new()
+	ray.collide_with_areas = true
+	ray.collide_with_bodies = false
+	ray.exclude_parent = true
+	var offset = randi()%360
+	for n in get_tree().get_nodes_in_group('MapNodes'):
+		n.add_child(ray)
+		for angle in range(16):
+			var rads = deg2rad(angle * 22.5 + offset)
+			ray.cast_to = Vector2(cos(rads), sin(rads)) * 240
+			ray.force_raycast_update()
+			var other = ray.get_collider()
+			if other and n.exits.find(other) == -1:
+				add_path(n, other.get_parent())
+				break
+		n.remove_child(ray)
+	ray.free()
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	randomize()
@@ -111,8 +140,10 @@ func _ready():
 	root.set_label('City')
 	root.add_to_group('MapNodes')
 	add_child(root)
+	Player.location = root
 	populate(root)
-	for i in range(4):
+	for i in range(5):
 		var nodes = get_tree().get_nodes_in_group('Open Nodes')
 		for n in nodes:
 			populate(n)
+	loop_map_nodes()
