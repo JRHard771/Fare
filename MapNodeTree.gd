@@ -124,7 +124,9 @@ func loop_map_nodes():
 			ray.cast_to = Vector2(cos(rads), sin(rads)) * 240
 			ray.force_raycast_update()
 			var other = ray.get_collider()
-			if other and n.exits.find(other) == -1:
+			if !other or other.get_parent().get_filename() == MapPath.get_path():
+				continue
+			elif n.exits.find(other) == -1:
 				add_path(n, other.get_parent())
 				break
 		n.remove_child(ray)

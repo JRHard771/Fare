@@ -21,9 +21,9 @@ func _process(delta):
 	label.visible_characters = floor(label_current)
 
 func add_exit(node):
-	if !exits.find(node):
+	if exits.find(node) == -1:
 		exits.append(node)
-	if !node.exits.find(self):
+	if node.exits.find(self) == -1:
 		node.exits.append(self)
 
 func set_label(text):
