@@ -1,12 +1,10 @@
 extends Camera2D
 
-# Declare member variables here. Examples:
-# var a = 2
-# var b = "text"
+onready var dest = position
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	pass # Replace with function body.
+	Player.connect("player_moved", self, "go_to_player")
 
 func ex_curve(vector):
 	vector.x = sign(vector.x) * range_lerp(abs(vector.x), 0, 512, 0, abs(vector.x))
@@ -14,10 +12,7 @@ func ex_curve(vector):
 	return vector
 
 func _process(delta):
-	if Input.get_mouse_button_mask():
-		var mpos = get_local_mouse_position()
-		position.x += mpos.x * delta
-		position.y += mpos.y * delta * (512 / 300)
+	position = position.linear_interpolate(dest, delta)
 
 func _input(event):
 	var vinny = get_node("Vignette")
@@ -29,3 +24,6 @@ func _input(event):
 		zoom = Vector2(0.3, 0.3)
 	zoom = zoom.clamped(3.0)
 	vinny.scale = zoom
+
+func go_to_player():
+	dest = Player.location.position

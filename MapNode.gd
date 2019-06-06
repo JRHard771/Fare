@@ -1,5 +1,6 @@
 extends Node2D
 
+var selected = false
 var type = null
 var exits = []
 var scale_dest = Vector2(0.0625, 0.0625)
@@ -37,9 +38,16 @@ func set_texture(resource, set_scale=0.0625):
 	sprite.scale.y = set_scale
 
 func _on_mouse_entered():
+	selected = true
 	scale_dest = Vector2(0.125, 0.125)
 	label_dest = 128
 
 func _on_mouse_exited():
+	selected = false
 	scale_dest = Vector2(0.0625, 0.0625)
 	label_dest = 0
+
+func _input(event):
+	if selected and event.is_action_pressed("left_click"):
+		Player.location = self
+		Player.emit_signal("player_moved")
