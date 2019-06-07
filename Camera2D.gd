@@ -12,7 +12,7 @@ func ex_curve(vector):
 	return vector
 
 func _process(delta):
-	position = position.linear_interpolate(dest, delta)
+	position = position.linear_interpolate(dest, delta * 2)
 
 func _input(event):
 	var vinny = get_node("Vignette")

@@ -49,5 +49,6 @@ func _on_mouse_exited():
 
 func _input(event):
 	if selected and event.is_action_pressed("left_click"):
-		Player.location = self
-		Player.emit_signal("player_moved")
+		if Player.location.exits.find(self) > -1:
+			Player.location = self
+			Player.emit_signal("player_moved")
