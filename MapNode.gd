@@ -27,15 +27,16 @@ func add_exit(node):
 	if node.exits.find(self) == -1:
 		node.exits.append(self)
 
+func set_terrain(t, tdict):
+	type = t
+	var sprite = get_node("Sprite")
+	sprite.texture = tdict['image']
+	sprite.self_modulate = tdict['color']
+	set_label(t.capitalize())
+
 func set_label(text):
 	var label = get_node("CenterContainer/Label")
 	label.text = text
-
-func set_texture(resource, set_scale=0.0625):
-	var sprite = get_node("Sprite")
-	sprite.texture = resource
-	sprite.scale.x = set_scale
-	sprite.scale.y = set_scale
 
 func _on_mouse_entered():
 	selected = true
